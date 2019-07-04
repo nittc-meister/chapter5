@@ -22,13 +22,26 @@
             </div>
             <input id="name" placeholder="名前">
             <!-- TODO1 ここにメッセージ入力フォームを追加 -->
+			<input id="message" placeholder="メッセージ">
             <!-- TODO1 ここに送信ボタンを追加 -->
-            
+            <button id="send" >送信</button>
+
+
         </div>
         <script>
             // TODO0 ここに設定情報を貼り付ける  
 
-            
+            var firebaseConfig = {
+    apiKey: "AIzaSyDnPVPPcgGoFGQFGgOeGgTYMoHZ1WGwBnI",
+    authDomain: "tapioka-4edbd.firebaseapp.com",
+    databaseURL: "https://tapioka-4edbd.firebaseio.com",
+    projectId: "tapioka-4edbd",
+    storageBucket: "tapioka-4edbd.appspot.com",
+    messagingSenderId: "812968479186",
+    appId: "1:812968479186:web:fc26b7e9cf1b2c93"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
             
             
             // データベースの参照を準備
@@ -36,9 +49,43 @@
         
             // TODO4 メッセージを表示
             
+messagesRef.onSnapshot(function(snapshot) {
+
+   snapshot.docChanges.forEach(function(change) {
+
+       if (change.type === 'added') {
+
+           $('<div id="box" class="line__left">').appendTo('#messages');
+
+           $('<div>').text(change.doc.data().name).appendTo('#box');
+
+           $('<div class="text">').text(change.doc.data().body).appendTo('#box');
+
+       }
+
+   });
+
+});
+
+
 
             // TODO2 送信ボタンが押された時の処理
             
+$('#send').click(function() {
+
+
+messagesRef.add({
+
+name: $('#name').val(),
+
+body: $('#message').val()
+});
+
+
+
+});
+
+
         </script>
     </body>
 </html>
