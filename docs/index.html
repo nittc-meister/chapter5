@@ -7,7 +7,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>     
         <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase-firestore.js"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+         <link rel="stylesheet" type="text/css" href="style.css"> 
     </head>
     <body>
         <h1>meister 2019 Python/IoTコース</h1>
@@ -20,14 +20,26 @@
                 </div>
                 <ul id="messages"></ul>
             </div>
-            <input id="name" placeholder="名前">
+            <input id="name" placeholder="Name">
             <!-- TODO1 ここにメッセージ入力フォームを追加 -->
+            <input id="message" placeholder="Message">
             <!-- TODO1 ここに送信ボタンを追加 -->
+            <button id="send" >Transmission</button>
             
         </div>
         <script>
             // TODO0 ここに設定情報を貼り付ける  
-
+            var firebaseConfig = {
+    apiKey: "AIzaSyAigK-44SDvPRygoVAlbeIWyfYhlDpa3P4",
+    authDomain: "sample1-63043.firebaseapp.com",
+    databaseURL: "https://sample1-63043.firebaseio.com",
+    projectId: "sample1-63043",
+    storageBucket: "",
+    messagingSenderId: "419623157967",
+    appId: "1:419623157967:web:e9199ee64db1922a"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
             
             
             
@@ -35,9 +47,24 @@
             var messagesRef = firebase.firestore().collection('messages')
         
             // TODO4 メッセージを表示
-            
+            messagesRef.onSnapshot(function(snapshot) {
+   snapshot.docChanges.forEach(function(change) {
+       if (change.type === 'added') {
+           $('<div id="box" class="line__left">').appendTo('#messages');
+           $('<div>').text(change.doc.data().name).appendTo('#box');
+           $('<div class="text">').text(change.doc.data().body).appendTo('#box');
+       }
+   });
+});
+
 
             // TODO2 送信ボタンが押された時の処理
+            $('#send').click(function() {
+            	messagesRef.add({
+            		name: $('#name').val(),
+            		body: $('#message').val()});
+            });
+
             
         </script>
     </body>
