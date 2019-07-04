@@ -1,44 +1,71 @@
 <!doctype html>
 <html lang="ja">
-    <head>
-        <meta charset="utf-8">
-        <title>meister</title>
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>     
-        <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase-firestore.js"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
-    </head>
-    <body>
-        <h1>meister 2019 Python/IoTコース</h1>
-        <!-- https://tomokazu-kozuma.com/develop-chat-with-cloud-firestore/ -->
-        
-        <div>
-            <div class="line__container">
-                <div class="line__title">
-                    #5 チャットアプリの作成
-                </div>
-                <ul id="messages"></ul>
-            </div>
-            <input id="name" placeholder="名前">
-            <!-- TODO1 ここにメッセージ入力フォームを追加 -->
-            <!-- TODO1 ここに送信ボタンを追加 -->
-            
-        </div>
-        <script>
-            // TODO0 ここに設定情報を貼り付ける  
+	<head>
+		<meta charset="utf-8">
+		<title>meister</title>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>     
+		<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase-firestore.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<h1>meister 2019 Python/IoTコース</h1>
+		<!-- https://tomokazu-kozuma.com/develop-chat-with-cloud-firestore/ -->
+		
+		<div>
+			<div class="line__container">
+				<div class="line__title">
+					#5 チャットアプリの作成
+				</div>
+				<ul id="messages"></ul>
+			</div>
+			<input id="name" placeholder="名前">
+			<!-- TODO1 ここにメッセージ入力フォームを追加 -->
+			<input id="message" placeholder="メッセージ">
+			<!-- TODO1 ここに送信ボタンを追加 -->
+			<button id="send" >投稿</button>
+			
+		</div>
+		<script>
+			// TODO0 ここに設定情報を貼り付ける  
+			var firebaseConfig = {
+			apiKey: "AIzaSyAxhPdYKytHtEqzCoevsPIB9cVG0GHSOiU",
+			authDomain: "meister16166.firebaseapp.com",
+			databaseURL: "https://meister16166.firebaseio.com",
+			projectId: "meister16166",
+			storageBucket: "",
+			messagingSenderId: "572314984138",
+			appId: "1:572314984138:web:4426f02df904761a"
+			};
+			// Initialize Firebase
+			firebase.initializeApp(firebaseConfig);
+			
+			
+			
+			// データベースの参照を準備
+			var messagesRef = firebase.firestore().collection('messages')
+		
+			// TODO4 メッセージを表示
+			messagesRef.onSnapshot(function(snapshot) {
+				snapshot.docChanges.forEach(function(change) {
+					if (change.type === 'added') {
+						$('<div id="box" class="line__left">').appendTo('#messages');
+						$('<div>').text(change.doc.data().name).appendTo('#box');
+						$('<div class="text">').text(change.doc.data().body).appendTo('#box');
+					}
+				});
+			});
 
-            
-            
-            
-            // データベースの参照を準備
-            var messagesRef = firebase.firestore().collection('messages')
-        
-            // TODO4 メッセージを表示
-            
 
-            // TODO2 送信ボタンが押された時の処理
-            
-        </script>
-    </body>
+			// TODO2 送信ボタンが押された時の処理
+			$('#send').click(function() {
+				messagesRef.add({
+					name: $('#name').val(),
+					body: $('#message').val()
+				});
+			});
+
+		</script>
+	</body>
 </html>
