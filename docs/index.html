@@ -7,7 +7,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>     
         <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase-firestore.js"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
         <h1>meister 2019 Python/IoTコース</h1>
@@ -22,12 +22,24 @@
             </div>
             <input id="name" placeholder="名前">
             <!-- TODO1 ここにメッセージ入力フォームを追加 -->
+            <input id="message" placeholder="メッセージ">
             <!-- TODO1 ここに送信ボタンを追加 -->
+            <button id="send" >送信</button>
             
         </div>
         <script>
             // TODO0 ここに設定情報を貼り付ける  
-
+    var firebaseConfig = {
+    apiKey: "AIzaSyACqR_TRtqZiw9FbgOPUEBD9p1rCGbkD5Y",
+    authDomain: "maister2019-apuri.firebaseapp.com",
+    databaseURL: "https://maister2019-apuri.firebaseio.com",
+    projectId: "maister2019-apuri",
+    storageBucket: "",
+    messagingSenderId: "846327052458",
+    appId: "1:846327052458:web:41bf3e63dd29a6ef"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
             
             
             
@@ -35,10 +47,25 @@
             var messagesRef = firebase.firestore().collection('messages')
         
             // TODO4 メッセージを表示
-            
+            messagesRef.onSnapshot(function(snapshot) {
+                snapshot.docChanges.forEach(function(change) {
+                    if (change.type === 'added') {
+                        $('<div id="box" class="line__left">').appendTo('#messages');
+                        $('<div>').text(change.doc.data().name).appendTo('#box');
+                        $('<div class="text">').text(change.doc.data().body).appendTo('#box');
+                    }
+                });
+            });
+
 
             // TODO2 送信ボタンが押された時の処理
-            
+            $('#send').click(function() {
+                messagesRef.add({
+                    name: $('#name').val(),
+                    body: $('#message').val()
+                });
+            });
+
         </script>
     </body>
 </html>
